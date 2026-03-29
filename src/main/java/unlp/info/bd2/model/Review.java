@@ -1,14 +1,25 @@
 package unlp.info.bd2.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 
+@Entity
 public class Review {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
     private int rating;
-
     private String comment;
 
+    // Obligatorio: toda reseña pertenece a una compra
+    @OneToOne(optional = false)
+    @JoinColumn(name = "purchase_id", unique = true)
     private Purchase purchase;
 
 

@@ -1,14 +1,29 @@
 package unlp.info.bd2.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
+@Entity
 public class ItemService {
 
-    Long id;
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
     private int quantity;
 
+    // Lado inverso de la composición con Purchase
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "purchase_id")
     private Purchase purchase;
 
+    // Relación Unidireccional hacia Service (como analizamos en la pregunta 19)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "service_id")
     private Service service;
 
     public Long getId() {

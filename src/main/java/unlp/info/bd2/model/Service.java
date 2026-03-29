@@ -1,29 +1,42 @@
 package unlp.info.bd2.model;
+import jakarta.persistence.*; // Si usas una versión antigua de Spring Boot, podría ser javax.persistence.*
 
-import java.util.ArrayList;
-import java.util.List;
-
+@Entity
+@Table(name = "services")
 public class Service {
 
+    // e) Clave primaria con estrategia automática
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // f) Atributos según requerimientos y g) Restricción de unicidad
+    @Column(nullable = false, length = 100, unique = true)
     private String name;
 
-    private float price;
-
+    @Column(nullable = true) // Es opcional ponerlo, por defecto es true
     private String description;
 
-    private List<ItemService> itemServiceList;
+    @Column(nullable = false)
+    private Double price; 
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "supplier_id") // Nombre de la columna FK en la tabla
     private Supplier supplier;
 
+    protected Service() {
+    }
+
+    public Service(String name, String description, Double price) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+    }
+
+    // --- Getters y Setters ---
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -34,14 +47,6 @@ public class Service {
         this.name = name;
     }
 
-    public float getPrice() {
-        return price;
-    }
-
-    public void setPrice(float price) {
-        this.price = price;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -50,16 +55,12 @@ public class Service {
         this.description = description;
     }
 
-    public List<ItemService> getItemServiceList() {
-        return itemServiceList;
+    public Double getPrice() {
+        return price;
     }
 
-    public void setItemServiceList(List<ItemService> itemServiceList) {
-        this.itemServiceList = itemServiceList;
-    }
-
-    public Supplier getSupplier() {
-        return supplier;
+    public void setPrice(Double price) {
+        this.price = price;
     }
 
     public void setSupplier(Supplier supplier) {

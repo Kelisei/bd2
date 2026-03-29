@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Primary;
 import unlp.info.bd2.repositories.*;
 import unlp.info.bd2.services.*;
 
+
 @Configuration
 public class AppConfig {
 

@@ -1,0 +1,87 @@
+-------------------------------------------------------------------------------
+Test set: unlp.info.bd2.ToursApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 11, Failures: 1, Errors: 10, Skipped: 0, Time elapsed: 3.118 s <<< FAILURE! -- in unlp.info.bd2.ToursApplicationTests
+unlp.info.bd2.ToursApplicationTests.addReviewToPurchaseTest -- Time elapsed: 0.845 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:31)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:183)
+	at unlp.info.bd2.ToursApplicationTests.addReviewToPurchaseTest(ToursApplicationTests.java:286)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+unlp.info.bd2.ToursApplicationTests.createAndGetUserTest -- Time elapsed: 0.009 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "unlp.info.bd2.model.User.getId()" because "user1" is null
+	at unlp.info.bd2.ToursApplicationTests.createAndGetUserTest(ToursApplicationTests.java:55)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+unlp.info.bd2.ToursApplicationTests.assignWorkersToRoutesTest -- Time elapsed: 0.008 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "unlp.info.bd2.model.DriverUser.getUsername()" because "driverUser1" is null
+	at unlp.info.bd2.ToursApplicationTests.assignWorkersToRoutesTest(ToursApplicationTests.java:155)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+unlp.info.bd2.ToursApplicationTests.createAndGetPurchaseTest -- Time elapsed: 0.005 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "unlp.info.bd2.model.Purchase.getId()" because "purchase1" is null
+	at unlp.info.bd2.ToursApplicationTests.createAndGetPurchaseTest(ToursApplicationTests.java:229)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+unlp.info.bd2.ToursApplicationTests.removePurchaseAndItems -- Time elapsed: 0.010 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "unlp.info.bd2.model.Service.getItemServiceList()" because "service1" is null
+	at unlp.info.bd2.ToursApplicationTests.removePurchaseAndItems(ToursApplicationTests.java:267)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+unlp.info.bd2.ToursApplicationTests.createAndGetRoutesAndStopsTest -- Time elapsed: 0.009 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "unlp.info.bd2.model.Stop.getId()" because "stop1" is null
+	at unlp.info.bd2.ToursApplicationTests.createAndGetRoutesAndStopsTest(ToursApplicationTests.java:113)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+unlp.info.bd2.ToursApplicationTests.createAndGetSupplierAndService -- Time elapsed: 0.008 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "unlp.info.bd2.model.Supplier.getId()" because "supplier1" is null
+	at unlp.info.bd2.ToursApplicationTests.createAndGetSupplierAndService(ToursApplicationTests.java:172)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+unlp.info.bd2.ToursApplicationTests.updateUserTest -- Time elapsed: 0.008 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "unlp.info.bd2.model.User.getPhoneNumber()" because "user1" is null
+	at unlp.info.bd2.ToursApplicationTests.updateUserTest(ToursApplicationTests.java:88)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+unlp.info.bd2.ToursApplicationTests.deleteRouteTest -- Time elapsed: 0.008 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "unlp.info.bd2.model.Route.getId()" because "route1" is null
+	at unlp.info.bd2.ToursApplicationTests.deleteRouteTest(ToursApplicationTests.java:305)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+unlp.info.bd2.ToursApplicationTests.deleteUserTest -- Time elapsed: 0.009 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "unlp.info.bd2.model.User.isActive()" because "user1" is null
+	at unlp.info.bd2.ToursApplicationTests.deleteUserTest(ToursApplicationTests.java:315)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+unlp.info.bd2.ToursApplicationTests.updateServicePriceTest -- Time elapsed: 0.007 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "unlp.info.bd2.model.Service.getPrice()" because "service1" is null
+	at unlp.info.bd2.ToursApplicationTests.updateServicePriceTest(ToursApplicationTests.java:207)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+

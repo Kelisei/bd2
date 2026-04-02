@@ -1,4 +1,7 @@
 package unlp.info.bd2.model;
+
+import java.util.List;
+
 import jakarta.persistence.*; // Si usas una versión antigua de Spring Boot, podría ser javax.persistence.*
 
 @Entity
@@ -18,11 +21,13 @@ public class Service {
     private String description;
 
     @Column(nullable = false)
-    private Double price; 
+    private Double price;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "supplier_id") // Nombre de la columna FK en la tabla
     private Supplier supplier;
+    @OneToMany(mappedBy = "service")
+    private List<ItemService> itemServiceList = new java.util.ArrayList<>();
 
     protected Service() {
     }
@@ -55,8 +60,16 @@ public class Service {
         this.description = description;
     }
 
+    public Supplier getSupplier() {
+        return supplier;
+    }
+
     public Double getPrice() {
         return price;
+    }
+
+    public List<ItemService> getItemServiceList() {
+        return itemServiceList;
     }
 
     public void setPrice(Double price) {

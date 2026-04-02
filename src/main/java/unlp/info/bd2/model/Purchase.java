@@ -43,6 +43,9 @@ public class Purchase {
     @OneToOne(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
     private Review review;
 
+    public List<ItemService> getItemServiceList() {
+        return items;
+    }
     // --- MÉTODOS DE SINCRONIZACIÓN (Helpers) ---
 
     public void addItemService(ItemService item) {

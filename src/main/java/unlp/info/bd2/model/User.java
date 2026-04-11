@@ -32,6 +32,8 @@ public class User {
 
     private List<Purchase> purchaseList;
 
+
+
     public Long getId() {
         return id;
     }

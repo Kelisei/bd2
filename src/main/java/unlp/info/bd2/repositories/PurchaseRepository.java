@@ -1,0 +1,42 @@
+package unlp.info.bd2.repositories;
+
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import unlp.info.bd2.model.Purchase;
+
+import java.util.Date;
+import java.util.List;
+
+@Repository
+public class PurchaseRepository {
+
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    public void save(Purchase purchase) {
+        sessionFactory.getCurrentSession().merge(purchase);
+    }
+
+    public Purchase findById(Long id) {
+        return sessionFactory.getCurrentSession().get(Purchase.class, id);
+    }
+
+    public List<Purchase> findAll() {
+        return sessionFactory.getCurrentSession()
+                .createQuery("FROM Purchase", Purchase.class)
+                .getResultList();
+    }
+
+    public void delete(Purchase purchase) {
+        sessionFactory.getCurrentSession().remove(purchase);
+    }
+
+    public long getCountOfPurchasesBetweenDates(Date start, Date end) {
+        return sessionFactory.getCurrentSession()
+                .createQuery("SELECT COUNT(p) FROM Purchase p WHERE p.date BETWEEN :start AND :end", Long.class)
+                .setParameter("start", start)
+                .setParameter("end", end)
+                .uniqueResult();
+    }
+}

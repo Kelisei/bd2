@@ -15,8 +15,8 @@ public class UserRepository {
     @Autowired
     private SessionFactory sessionFactory;
 
-    public void save(User user) {
-        sessionFactory.getCurrentSession().merge(user);
+    public User save(User user) {
+        return sessionFactory.getCurrentSession().merge(user);
     }
 
     public User findById(Long id) {
@@ -33,20 +33,29 @@ public class UserRepository {
         sessionFactory.getCurrentSession().remove(user);
     }
 
+    public String getUsernameById(Long id) {
+        // Usamos FlushMode.COMMIT para evitar que el auto-flush guarde los cambios
+        // pendientes
+        // (como el nuevo username seteado en el objeto) antes de consultar el valor
+        // original.
+        return sessionFactory.getCurrentSession()
+                .createQuery("SELECT username FROM User WHERE id = :id", String.class)
+                .setParameter("id", id)
+                .setHibernateFlushMode(org.hibernate.FlushMode.COMMIT)
+                .uniqueResult();
+    }
+
     public List<User> getUserSpendingMoreThan(float mount) {
         return sessionFactory.getCurrentSession()
-                .createQuery("SELECT DISTINCT p.user FROM Purchase p LEFT JOIN p.items i " +
-                        "GROUP BY p.user, p.id, p.route.price " +
-                        "HAVING (p.route.price + COALESCE(SUM(i.service.price * i.quantity), 0)) >= :mount", User.class)
-                .setParameter("mount", (double) mount) // HQL a veces requiere casteo a double para operaciones math
+                .createQuery("SELECT DISTINCT p.user FROM Purchase p WHERE p.totalPrice >= :mount", User.class)
+                .setParameter("mount", mount)
                 .getResultList();
     }
 
     public List<TourGuideUser> getTourGuidesWithRating1() {
-        // Usamos DISTINCT porque un guía puede tener varias compras con rating 1
-        return sessionFactory.getCurrentSession()
-                .createQuery("SELECT DISTINCT g FROM Route r JOIN r.guides g JOIN r.purchases p JOIN p.review rev " +
-                        "WHERE rev.rating = 1", TourGuideUser.class)
+        return this.sessionFactory.getCurrentSession()
+                .createQuery("select distinct g from Route r join r.tourGuides g, Purchase p "
+                        + "where p.route = r and p.review.rating = 1", TourGuideUser.class)
                 .getResultList();
     }
 
@@ -57,8 +66,8 @@ public class UserRepository {
                 .uniqueResultOptional();
     }
 
-    public void Update(User user) {
-        sessionFactory.getCurrentSession().merge(user);
+    public User update(User user) {
+        return sessionFactory.getCurrentSession().merge(user);
     }
 
 }

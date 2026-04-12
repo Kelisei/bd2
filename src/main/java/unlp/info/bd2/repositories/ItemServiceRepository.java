@@ -12,8 +12,8 @@ public class ItemServiceRepository {
     @Autowired
     private SessionFactory sessionFactory;
 
-    public void save(ItemService itemService) {
-        sessionFactory.getCurrentSession().merge(itemService);
+    public ItemService save(ItemService itemService) {
+        return sessionFactory.getCurrentSession().merge(itemService);
     }
 
     public ItemService findById(Long id) {

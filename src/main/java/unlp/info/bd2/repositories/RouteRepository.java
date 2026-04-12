@@ -14,8 +14,8 @@ public class RouteRepository {
     @Autowired
     private SessionFactory sessionFactory;
 
-    public void save(Route route) {
-        sessionFactory.getCurrentSession().merge(route);
+    public Route save(Route route) {
+        return sessionFactory.getCurrentSession().merge(route);
     }
 
     public Route findById(Long id) {
@@ -55,9 +55,9 @@ public class RouteRepository {
     }
 
     public List<Route> getTop3RoutesWithMaxRating() {
-        return sessionFactory.getCurrentSession()
-                .createQuery("SELECT r FROM Route r JOIN r.purchases p JOIN p.review rev " +
-                        "GROUP BY r ORDER BY AVG(rev.rating) DESC", Route.class)
+        return this.sessionFactory.getCurrentSession()
+                .createQuery("select p.route from Purchase p where p.review is not null " +
+                        "group by p.route order by avg(p.review.rating) desc", Route.class)
                 .setMaxResults(3)
                 .getResultList();
     }
@@ -69,7 +69,7 @@ public class RouteRepository {
                 .getResultList();
     }
 
-    public void update(Route route) {
-        sessionFactory.getCurrentSession().merge(route);
+    public Route update(Route route) {
+        return sessionFactory.getCurrentSession().merge(route);
     }
 }

@@ -13,8 +13,8 @@ public class ServiceRepository {
     @Autowired
     private SessionFactory sessionFactory;
 
-    public void save(Service service) {
-        sessionFactory.getCurrentSession().merge(service);
+    public Service save(Service service) {
+        return sessionFactory.getCurrentSession().merge(service);
     }
 
     public Service findById(Long id) {
@@ -33,14 +33,14 @@ public class ServiceRepository {
 
     public Service getMostDemandedService() {
         return sessionFactory.getCurrentSession()
-                .createQuery("SELECT s FROM Service s JOIN s.items i " +
+                .createQuery("SELECT s FROM Service s JOIN s.itemServiceList i " +
                         "GROUP BY s ORDER BY SUM(i.quantity) DESC", unlp.info.bd2.model.Service.class)
                 .setMaxResults(1)
                 .uniqueResult();
     }
 
-    public void update(Service service) {
-        sessionFactory.getCurrentSession().merge(service);
+    public Service update(Service service) {
+        return sessionFactory.getCurrentSession().merge(service);
     }
 
     public Service getServiceById(Long id) {

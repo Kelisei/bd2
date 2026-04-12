@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Route {
@@ -50,7 +51,9 @@ public class Route {
     )
     private List<TourGuideUser> tourGuides = new ArrayList<>();
 
-    private int maxNumberUsers;
+    @OneToMany(mappedBy = "route")
+    private List<Purchase> purchases = new ArrayList<>();
+
 
     // --- MÉTODOS DE SINCRONIZACIÓN ---
     public void addStop(Stop stop) {
@@ -90,12 +93,12 @@ public class Route {
         this.totalKm = totalKm;
     }
 
-    public int getMaxNumberUsers() {
-        return maxNumberUsers;
+    public int getMaxNumberOfUsers() {
+        return maxNumberOfUsers;
     }
 
-    public void setMaxNumberUsers(int maxNumberUsers) {
-        this.maxNumberUsers = maxNumberUsers;
+    public void setMaxNumberOfUsers(int maxNumberOfUsers) {
+        this.maxNumberOfUsers = maxNumberOfUsers;
     }
 
     public List<Stop> getStops() {
@@ -104,6 +107,14 @@ public class Route {
 
     public void setStops(List<Stop> stops) {
         this.stops = stops;
+    }
+
+    public List<Purchase> getPurchases() {
+        return purchases;
+    }
+
+    public void setPurchases(List<Purchase> purchases) {
+        this.purchases = purchases;
     }
 
     public List<DriverUser> getDriverList() {

@@ -6,6 +6,7 @@ import java.util.List;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
 
 @Entity
 @DiscriminatorValue("GUIDE")
@@ -13,7 +14,8 @@ public class TourGuideUser extends User {
 
     private String education;
 
-    private List<Route> routes;
+    @ManyToMany(mappedBy = "tourGuides")
+    private List<Route> routes = new ArrayList<>();
 
     public String getEducation() {
         return education;

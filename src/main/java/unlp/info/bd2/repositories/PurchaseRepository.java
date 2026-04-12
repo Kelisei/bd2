@@ -15,8 +15,8 @@ public class PurchaseRepository {
     @Autowired
     private SessionFactory sessionFactory;
 
-    public void save(Purchase purchase) {
-        sessionFactory.getCurrentSession().merge(purchase);
+    public Purchase save(Purchase purchase) {
+        return sessionFactory.getCurrentSession().merge(purchase);
     }
 
     public Purchase findById(Long id) {

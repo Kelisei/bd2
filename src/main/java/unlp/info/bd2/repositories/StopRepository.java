@@ -12,8 +12,8 @@ public class StopRepository {
     @Autowired
     private SessionFactory sessionFactory;
 
-    public void save(Stop stop) {
-        sessionFactory.getCurrentSession().merge(stop);
+    public Stop save(Stop stop) {
+        return sessionFactory.getCurrentSession().merge(stop);
     }
 
     public Stop findById(Long id) {
@@ -34,7 +34,6 @@ public class StopRepository {
         return sessionFactory.getCurrentSession()
                 .createQuery("FROM Stop WHERE name LIKE :name", Stop.class)
                 .setParameter("name", name + "%")
-                .setMaxResults(1)
                 .getResultList();
     }
 }

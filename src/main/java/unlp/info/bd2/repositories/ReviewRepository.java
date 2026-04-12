@@ -12,8 +12,8 @@ public class ReviewRepository {
     @Autowired
     private SessionFactory sessionFactory;
 
-    public void save(Review review) {
-        sessionFactory.getCurrentSession().merge(review);
+    public Review save(Review review) {
+        return sessionFactory.getCurrentSession().merge(review);
     }
 
     public Review findById(Long id) {

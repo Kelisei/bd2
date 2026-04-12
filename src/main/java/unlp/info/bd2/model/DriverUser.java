@@ -1,9 +1,11 @@
 package unlp.info.bd2.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
 
 @Entity
 @DiscriminatorValue("DRIVER")
@@ -11,7 +13,8 @@ public class DriverUser extends User {
 
     private String expedient;
 
-    private List<Route> routes;
+    @ManyToMany(mappedBy = "drivers")
+    private List<Route> routes = new ArrayList<>();
 
     public String getExpedient() {
         return expedient;
@@ -25,7 +28,7 @@ public class DriverUser extends User {
         return routes;
     }
 
-    public void setRouts(List<Route> routs) {
-        this.routes = routs;
+    public void setRoutes(List<Route> routes) {
+        this.routes = routes;
     }
 }

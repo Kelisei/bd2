@@ -13,8 +13,8 @@ public class SupplierRepository {
     @Autowired
     private SessionFactory sessionFactory;
 
-    public void save(Supplier supplier) {
-        sessionFactory.getCurrentSession().merge(supplier);
+    public Supplier save(Supplier supplier) {
+        return sessionFactory.getCurrentSession().merge(supplier);
     }
 
     public Supplier findById(Long id) {
@@ -33,7 +33,7 @@ public class SupplierRepository {
 
     public List<Supplier> getTopNSuppliersInPurchases(int n) {
         return sessionFactory.getCurrentSession()
-                .createQuery("SELECT s FROM Supplier s JOIN s.services srv JOIN srv.items i " +
+                .createQuery("SELECT s FROM Supplier s JOIN s.services srv JOIN srv.itemServiceList i " +
                         "GROUP BY s ORDER BY COUNT(i) DESC", Supplier.class)
                 .setMaxResults(n) // Límite de resultados
                 .getResultList();

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import unlp.info.bd2.model.Supplier;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class SupplierRepository {
@@ -36,5 +37,13 @@ public class SupplierRepository {
                         "GROUP BY s ORDER BY COUNT(i) DESC", Supplier.class)
                 .setMaxResults(n) // Límite de resultados
                 .getResultList();
+    }
+
+    public Optional<Supplier> getSupplierByAuthorizationNumber(String authorizationNumber) {
+        List<Supplier> suppliers = sessionFactory.getCurrentSession()
+                .createQuery("FROM Supplier WHERE authorizationNumber = :authNum", Supplier.class)
+                .setParameter("authNum", authorizationNumber)
+                .getResultList();
+        return suppliers.isEmpty() ? Optional.empty() : Optional.of(suppliers.get(0));
     }
 }

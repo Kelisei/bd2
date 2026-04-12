@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import unlp.info.bd2.model.Service;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class ServiceRepository {
@@ -31,10 +32,27 @@ public class ServiceRepository {
     }
 
     public Service getMostDemandedService() {
-    return sessionFactory.getCurrentSession()
-        .createQuery("SELECT s FROM Service s JOIN s.items i " +
-                     "GROUP BY s ORDER BY SUM(i.quantity) DESC", unlp.info.bd2.model.Service.class)
-        .setMaxResults(1)
-        .uniqueResult();
-}
+        return sessionFactory.getCurrentSession()
+                .createQuery("SELECT s FROM Service s JOIN s.items i " +
+                        "GROUP BY s ORDER BY SUM(i.quantity) DESC", unlp.info.bd2.model.Service.class)
+                .setMaxResults(1)
+                .uniqueResult();
+    }
+
+    public void update(Service service) {
+        sessionFactory.getCurrentSession().merge(service);
+    }
+
+    public Service getServiceById(Long id) {
+        return sessionFactory.getCurrentSession().get(Service.class, id);
+    }
+
+    public Optional<Service> getServiceByNameAndSupplierId(String name, Long id) {
+        List<Service> services = sessionFactory.getCurrentSession()
+                .createQuery("FROM Service s WHERE s.name = :name AND s.supplier.id = :supplierId", Service.class)
+                .setParameter("name", name)
+                .setParameter("supplierId", id)
+                .getResultList();
+        return services.isEmpty() ? Optional.empty() : Optional.of(services.get(0));
+    }
 }

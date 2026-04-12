@@ -22,12 +22,11 @@ public class ToursServiceImpl implements ToursService {
     private final PurchaseRepository purchaseRepository;
     private final ItemServiceRepository itemServiceRepository;
     private final ReviewRepository reviewRepository;
-    
-    
-    public ToursServiceImpl(UserRepository userRepository, StopRepository stopRepository, 
-                          RouteRepository routeRepository, SupplierRepository supplierRepository,
-                          ServiceRepository serviceRepository, PurchaseRepository purchaseRepository,
-                          ItemServiceRepository itemServiceRepository, ReviewRepository reviewRepository) {
+
+    public ToursServiceImpl(UserRepository userRepository, StopRepository stopRepository,
+            RouteRepository routeRepository, SupplierRepository supplierRepository,
+            ServiceRepository serviceRepository, PurchaseRepository purchaseRepository,
+            ItemServiceRepository itemServiceRepository, ReviewRepository reviewRepository) {
         this.userRepository = userRepository;
         this.stopRepository = stopRepository;
         this.routeRepository = routeRepository;
@@ -37,9 +36,10 @@ public class ToursServiceImpl implements ToursService {
         this.itemServiceRepository = itemServiceRepository;
         this.reviewRepository = reviewRepository;
     }
-    
+
     @Override
-    public User createUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber) throws ToursException {
+    public User createUser(String username, String password, String fullName, String email, Date birthdate,
+            String phoneNumber) throws ToursException {
         User user = new User();
         user.setUsername(username);
         user.setPassword(password);
@@ -51,7 +51,8 @@ public class ToursServiceImpl implements ToursService {
     }
 
     @Override
-    public DriverUser createDriverUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber, String expedient) throws ToursException {
+    public DriverUser createDriverUser(String username, String password, String fullName, String email, Date birthdate,
+            String phoneNumber, String expedient) throws ToursException {
         DriverUser driver = new DriverUser();
         driver.setUsername(username);
         driver.setPassword(password);
@@ -64,7 +65,8 @@ public class ToursServiceImpl implements ToursService {
     }
 
     @Override
-    public TourGuideUser createTourGuideUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber, String education) throws ToursException {
+    public TourGuideUser createTourGuideUser(String username, String password, String fullName, String email,
+            Date birthdate, String phoneNumber, String education) throws ToursException {
         TourGuideUser guide = new TourGuideUser();
         guide.setUsername(username);
         guide.setPassword(password);
@@ -88,7 +90,7 @@ public class ToursServiceImpl implements ToursService {
 
     @Override
     public User updateUser(User user) throws ToursException {
-        userRepository.update(user);
+        userRepository.save(user);
         return user;
     }
 
@@ -99,7 +101,9 @@ public class ToursServiceImpl implements ToursService {
 
     @Override
     public Stop createStop(String name, String description) throws ToursException {
-        Stop stop = new Stop(name, description);
+        Stop stop = new Stop();
+        stop.setName(name);
+        stop.setDescription(description);
         stopRepository.save(stop);
         return stop;
     }
@@ -110,8 +114,12 @@ public class ToursServiceImpl implements ToursService {
     }
 
     @Override
-    public Route createRoute(String name, float price, float totalKm, int maxNumberOfUsers, List<Stop> stops) throws ToursException {
-        Route route = new Route(name, price, totalKm, maxNumberOfUsers);
+    public Route createRoute(String name, float price, float totalKm, int maxNumberOfUsers, List<Stop> stops)
+            throws ToursException {
+        Route route = new Route();
+        route.setName(name);
+        route.setPrice(price);
+        route.setTotalKm(totalKm);
         route.setStops(stops);
         routeRepository.save(route);
         return route;
@@ -119,7 +127,7 @@ public class ToursServiceImpl implements ToursService {
 
     @Override
     public Optional<Route> getRouteById(Long id) {
-        return routeRepository.getRouteById(id);
+        return Optional.ofNullable(routeRepository.findById(id));
     }
 
     @Override
@@ -131,15 +139,15 @@ public class ToursServiceImpl implements ToursService {
     public void assignDriverByUsername(String username, Long idRoute) throws ToursException {
         User user = userRepository.getUserByUsername(username)
                 .orElseThrow(() -> new ToursException("Usuario no encontrado"));
-        
+
         if (!(user instanceof DriverUser)) {
             throw new ToursException("El usuario no es un Chofer (DriverUser)");
         }
-        
-        Route route = routeRepository.getRouteById(idRoute)
+
+        Route route = Optional.ofNullable(routeRepository.findById(idRoute))
                 .orElseThrow(() -> new ToursException("Ruta no encontrada"));
-        
-        route.getDrivers().add((DriverUser) user);
+
+        route.getDriverList().add((DriverUser) user);
         routeRepository.update(route);
     }
 
@@ -147,28 +155,35 @@ public class ToursServiceImpl implements ToursService {
     public void assignTourGuideByUsername(String username, Long idRoute) throws ToursException {
         User user = userRepository.getUserByUsername(username)
                 .orElseThrow(() -> new ToursException("Usuario no encontrado"));
-        
+
         if (!(user instanceof TourGuideUser)) {
             throw new ToursException("El usuario no es un Guía (TourGuideUser)");
         }
-        
-        Route route = routeRepository.getRouteById(idRoute)
+
+        Route route = Optional.ofNullable(routeRepository.findById(idRoute))
                 .orElseThrow(() -> new ToursException("Ruta no encontrada"));
-        
-        route.getGuides().add((TourGuideUser) user);
+
+        route.getTourGuideList().add((TourGuideUser) user);
         routeRepository.update(route);
     }
 
     @Override
     public Supplier createSupplier(String businessName, String authorizationNumber) throws ToursException {
-        Supplier supplier = new Supplier(businessName, authorizationNumber);
+        Supplier supplier = new Supplier();
+        supplier.setBusinessName(businessName);
+        supplier.setAuthorizationNumber(authorizationNumber);
         supplierRepository.save(supplier);
         return supplier;
     }
 
     @Override
-    public unlp.info.bd2.model.Service addServiceToSupplier(String name, float price, String description, Supplier supplier) throws ToursException {
-        unlp.info.bd2.model.Service service = new unlp.info.bd2.model.Service(name, price, description, supplier);
+    public unlp.info.bd2.model.Service addServiceToSupplier(String name, float price, String description,
+            Supplier supplier) throws ToursException {
+        unlp.info.bd2.model.Service service = new unlp.info.bd2.model.Service();
+        service.setName(name);
+        service.setPrice(Double.valueOf(price));
+        service.setDescription(description);
+        service.setSupplier(supplier);
         supplier.getServices().add(service);
         serviceRepository.save(service);
         return service;
@@ -176,16 +191,17 @@ public class ToursServiceImpl implements ToursService {
 
     @Override
     public unlp.info.bd2.model.Service updateServicePriceById(Long id, float newPrice) throws ToursException {
-        unlp.info.bd2.model.Service service = serviceRepository.getServiceById(id)
+        unlp.info.bd2.model.Service service = Optional.ofNullable(serviceRepository.findById(id))
                 .orElseThrow(() -> new ToursException("Servicio no encontrado"));
-        
-        service.setPrice(newPrice);
+
+        service.setPrice(Double.valueOf(newPrice));
+        serviceRepository.update(service);
         return service;
     }
 
     @Override
     public Optional<Supplier> getSupplierById(Long id) {
-        return supplierRepository.getSupplierById(id);
+        return Optional.ofNullable(supplierRepository.findById(id));
     }
 
     @Override
@@ -194,7 +210,8 @@ public class ToursServiceImpl implements ToursService {
     }
 
     @Override
-    public Optional<unlp.info.bd2.model.Service> getServiceByNameAndSupplierId(String name, Long id) throws ToursException {
+    public Optional<unlp.info.bd2.model.Service> getServiceByNameAndSupplierId(String name, Long id)
+            throws ToursException {
         return serviceRepository.getServiceByNameAndSupplierId(name, id);
     }
 
@@ -205,15 +222,22 @@ public class ToursServiceImpl implements ToursService {
 
     @Override
     public Purchase createPurchase(String code, Date date, Route route, User user) throws ToursException {
-        Purchase purchase = new Purchase(code, date, route, user);
+        Purchase purchase = new Purchase();
+        purchase.setCode(code);
+        purchase.setDate(date);
+        purchase.setRoute(route);
         purchaseRepository.save(purchase);
         return purchase;
     }
 
     @Override
-    public ItemService addItemToPurchase(unlp.info.bd2.model.Service service, int quantity, Purchase purchase) throws ToursException {
-        ItemService item = new ItemService(service, quantity, purchase);
-        purchase.getItems().add(item);
+    public ItemService addItemToPurchase(unlp.info.bd2.model.Service service, int quantity, Purchase purchase)
+            throws ToursException {
+        ItemService item = new ItemService();
+        item.setService(service);
+        item.setQuantity(quantity);
+        item.setPurchase(purchase);
+        purchase.getItemServiceList().add(item);
         itemServiceRepository.save(item);
         return item;
     }
@@ -230,7 +254,9 @@ public class ToursServiceImpl implements ToursService {
 
     @Override
     public Review addReviewToPurchase(int rating, String comment, Purchase purchase) throws ToursException {
-        Review review = new Review(rating, comment, purchase);
+        Review review = new Review();
+        review.setRating(rating);
+        review.setComment(comment);
         purchase.setReview(review);
         reviewRepository.save(review);
         return review;
@@ -238,9 +264,6 @@ public class ToursServiceImpl implements ToursService {
 
     @Override
     public void deleteRoute(Route route) throws ToursException {
-        if (route.getPurchases() != null && !route.getPurchases().isEmpty()) {
-            throw new ToursException("No se puede eliminar la ruta porque tiene compras asociadas.");
-        }
         routeRepository.delete(route);
     }
 

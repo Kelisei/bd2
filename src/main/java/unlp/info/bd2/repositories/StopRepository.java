@@ -29,4 +29,12 @@ public class StopRepository {
     public void delete(Stop stop) {
         sessionFactory.getCurrentSession().remove(stop);
     }
+
+    public List<Stop> getStopByNameStart(String name) {
+        return sessionFactory.getCurrentSession()
+                .createQuery("FROM Stop WHERE name LIKE :name", Stop.class)
+                .setParameter("name", name + "%")
+                .setMaxResults(1)
+                .getResultList();
+    }
 }

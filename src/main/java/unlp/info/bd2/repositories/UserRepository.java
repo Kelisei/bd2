@@ -50,11 +50,15 @@ public class UserRepository {
                 .getResultList();
     }
 
-    public Optional<User> getUserByUsername(String username){
+    public Optional<User> getUserByUsername(String username) {
         return sessionFactory.getCurrentSession()
                 .createQuery("FROM User u WHERE u.username = :username", User.class)
                 .setParameter("username", username)
                 .uniqueResultOptional();
+    }
+
+    public void Update(User user) {
+        sessionFactory.getCurrentSession().merge(user);
     }
 
 }

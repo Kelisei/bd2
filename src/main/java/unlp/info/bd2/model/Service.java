@@ -29,7 +29,7 @@ public class Service {
     @OneToMany(mappedBy = "service")
     private List<ItemService> itemServiceList = new java.util.ArrayList<>();
 
-    protected Service() {
+    public Service() {
     }
 
     public Service(String name, String description, Double price) {

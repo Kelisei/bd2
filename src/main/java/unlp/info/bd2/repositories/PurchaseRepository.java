@@ -7,6 +7,7 @@ import unlp.info.bd2.model.Purchase;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class PurchaseRepository {
@@ -38,5 +39,20 @@ public class PurchaseRepository {
                 .setParameter("start", start)
                 .setParameter("end", end)
                 .uniqueResult();
+    }
+
+    public Optional<Purchase> getPurchaseByCode(String code) {
+        List<Purchase> purchases = sessionFactory.getCurrentSession()
+                .createQuery("FROM Purchase WHERE code = :code", Purchase.class)
+                .setParameter("code", code)
+                .getResultList();
+        return purchases.isEmpty() ? Optional.empty() : Optional.of(purchases.get(0));
+    }
+
+    public List<Purchase> getAllPurchasesOfUsername(String username) {
+        return sessionFactory.getCurrentSession()
+                .createQuery("FROM Purchase WHERE user.username = :username", Purchase.class)
+                .setParameter("username", username)
+                .getResultList();
     }
 }

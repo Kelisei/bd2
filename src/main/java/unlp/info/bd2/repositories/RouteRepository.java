@@ -61,4 +61,15 @@ public class RouteRepository {
                 .setMaxResults(3)
                 .getResultList();
     }
+
+    public List<Route> getRoutesBelowPrice(float price) {
+        return sessionFactory.getCurrentSession()
+                .createQuery("FROM Route r WHERE r.price < :price", Route.class)
+                .setParameter("price", price)
+                .getResultList();
+    }
+
+    public void update(Route route) {
+        sessionFactory.getCurrentSession().merge(route);
+    }
 }

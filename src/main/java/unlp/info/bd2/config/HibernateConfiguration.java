@@ -18,15 +18,13 @@ import java.util.Properties;
 @EnableTransactionManagement
 public class HibernateConfiguration {
 
-    // Inyectamos las variables para soportar Docker, con valores por defecto para
-    // uso local
-    @Value("${spring.datasource.url:jdbc:mysql://localhost:3306/bd2_tours}")
+    @Value("${spring.datasource.url:jdbc:mysql://localhost:3306/bd2_tours?createDatabaseIfNotExist=true&useSSL=false&useTimezone=true&serverTimezone=UTC}")
     private String dbUrl;
 
     @Value("${spring.datasource.username:root}")
     private String dbUsername;
 
-    @Value("${spring.datasource.password:}")
+    @Value("${spring.datasource.password:KeliseiVentura1+}")
     private String dbPassword;
 
     @Value("${spring.datasource.driver-class-name:com.mysql.cj.jdbc.Driver}")
@@ -47,12 +45,36 @@ public class HibernateConfiguration {
 
     @Bean
     public DataSource dataSource() {
+        System.out.println("=== DATABASE CONFIG ===");
+        System.out.println("URL: " + dbUrl);
+        System.out.println("Username: " + dbUsername);
+        System.out.println("Password is empty? " + (dbPassword == null || dbPassword.isEmpty()));
+
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName(dbDriverClassName);
-        // Usamos las variables dinámicas
         dataSource.setUrl(dbUrl);
         dataSource.setUsername(dbUsername);
         dataSource.setPassword(dbPassword);
+
+        // FIXED: Use injected properties instead of hardcoded values
+        dataSource.setDriverClassName(dbDriverClassName);
+
+        // Option A: Use the injected URL directly
+        dataSource.setUrl(dbUrl);
+
+        // OR Option B: If you need group-specific databases, uncomment this:
+        // String url = dbUrl + "_" + this.getGroupNumber() +
+        // "?createDatabaseIfNotExist=true&useSSL=false&useTimezone=true&serverTimezone=UTC";
+        // dataSource.setUrl(url);
+
+        dataSource.setUsername(dbUsername);
+        dataSource.setPassword(dbPassword);
+
+        // Add connection pool settings (optional but recommended)
+        dataSource.setInitialSize(5);
+        dataSource.setMaxActive(10);
+        dataSource.setMinIdle(2);
+
         return dataSource;
     }
 
@@ -66,21 +88,18 @@ public class HibernateConfiguration {
 
     private Properties hibernateProperties() {
         Properties hibernateProperties = new Properties();
-
-        // Usamos la variable inyectada para el DDL
         hibernateProperties.setProperty("hibernate.hbm2ddl.auto", ddlAuto);
-
-        // CORRECCIÓN IMPORTANTE: Cambiado de H2Dialect a MySQLDialect
         hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
-
         hibernateProperties.setProperty("hibernate.show_sql", "true");
         hibernateProperties.setProperty("hibernate.format_sql", "true");
         hibernateProperties.setProperty("hibernate.use_sql_comments", "false");
+
+        // Add these for better MySQL compatibility
+        hibernateProperties.setProperty("hibernate.connection.autocommit", "false");
         return hibernateProperties;
     }
 
     private int getGroupNumber() {
-        return 0; // Asegúrate de poner tu número de grupo acá
+        return 0; // Replace with your actual group number (e.g., 1, 2, 3, etc.)
     }
-
 }

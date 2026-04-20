@@ -2,30 +2,29 @@ package unlp.info.bd2;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.transaction.annotation.Transactional;
 import unlp.info.bd2.config.AppConfig;
-import unlp.info.bd2.config.SpringDataConfiguration;
 import unlp.info.bd2.model.*;
 import unlp.info.bd2.services.ToursService;
 import unlp.info.bd2.utils.ToursException;
 
-import javax.swing.text.html.Option;
-import java.time.LocalDate;
 import java.util.*;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@ContextConfiguration(classes = { SpringDataConfiguration.class,
-		AppConfig.class }, loader = AnnotationConfigContextLoader.class)
-@ExtendWith(SpringExtension.class)
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+
+@SpringBootTest(classes = AppConfig.class)
+@EnableAutoConfiguration
+@EnableJpaRepositories(basePackages = "unlp.info.bd2.repositories")
+@EntityScan(basePackages = "unlp.info.bd2")
 @Transactional
 @Rollback(true)
 class ToursApplicationTests {

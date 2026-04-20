@@ -5,6 +5,7 @@ import unlp.info.bd2.utils.ToursException;
 import unlp.info.bd2.repositories.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.Date;
 import java.util.List;
@@ -40,7 +41,7 @@ public class ToursServiceImpl implements ToursService {
     @Override
     public User createUser(String username, String password, String fullName, String email, Date birthdate,
             String phoneNumber) throws ToursException {
-        if (userRepository.getUserByUsername(username).isPresent()) {
+        if (userRepository.findByUsername(username).isPresent()) {
             throw new ToursException("Constraint Violation");
         }
         User user = new User();
@@ -57,7 +58,7 @@ public class ToursServiceImpl implements ToursService {
     @Override
     public DriverUser createDriverUser(String username, String password, String fullName, String email, Date birthdate,
             String phoneNumber, String expedient) throws ToursException {
-        if (userRepository.getUserByUsername(username).isPresent()) {
+        if (userRepository.findByUsername(username).isPresent()) {
             throw new ToursException("Constraint Violation");
         }
         DriverUser driver = new DriverUser();
@@ -69,13 +70,13 @@ public class ToursServiceImpl implements ToursService {
         driver.setPhoneNumber(phoneNumber);
         driver.setExpedient(expedient);
         driver.setActive(true);
-        return (DriverUser) userRepository.save(driver);
+        return userRepository.save(driver);
     }
 
     @Override
     public TourGuideUser createTourGuideUser(String username, String password, String fullName, String email,
             Date birthdate, String phoneNumber, String education) throws ToursException {
-        if (userRepository.getUserByUsername(username).isPresent()) {
+        if (userRepository.findByUsername(username).isPresent()) {
             throw new ToursException("Constraint Violation");
         }
         TourGuideUser guide = new TourGuideUser();
@@ -87,25 +88,24 @@ public class ToursServiceImpl implements ToursService {
         guide.setPhoneNumber(phoneNumber);
         guide.setEducation(education);
         guide.setActive(true);
-        return (TourGuideUser) userRepository.save(guide);
+        return userRepository.save(guide);
     }
 
     @Override
     public Optional<User> getUserById(Long id) throws ToursException {
-        return Optional.ofNullable(userRepository.findById(id));
+        return userRepository.findById(id); // CORREGIDO: findById ya retorna Optional
     }
 
     @Override
     public Optional<User> getUserByUsername(String username) throws ToursException {
-        return userRepository.getUserByUsername(username);
+        return userRepository.findByUsername(username);
     }
 
     @Override
     public User updateUser(User user) throws ToursException {
-        // El test espera que el username sea inmutable via updateUser
-        String originalUsername = userRepository.getUsernameById(user.getId());
-        if (originalUsername != null) {
-            user.setUsername(originalUsername);
+        Optional<User> originalUser = userRepository.findById(user.getId());
+        if (originalUser.isPresent()) {
+            user.setUsername(originalUser.get().getUsername());
         }
         return userRepository.save(user);
     }
@@ -115,14 +115,12 @@ public class ToursServiceImpl implements ToursService {
         if (!user.isActive()) {
             throw new ToursException("El usuario se encuentra desactivado");
         }
-
         if (user instanceof TourGuideUser) {
             TourGuideUser guide = (TourGuideUser) user;
             if (guide.getRoutes() != null && !guide.getRoutes().isEmpty()) {
                 throw new ToursException("El usuario no puede ser desactivado");
             }
         }
-
         if (user.getPurchaseList() != null && !user.getPurchaseList().isEmpty()) {
             user.setActive(false);
             userRepository.save(user);
@@ -141,7 +139,7 @@ public class ToursServiceImpl implements ToursService {
 
     @Override
     public List<Stop> getStopByNameStart(String name) {
-        return stopRepository.getStopByNameStart(name);
+        return stopRepository.findByNameStartingWith(name); // CORREGIDO: Usando Query Method standard
     }
 
     @Override
@@ -158,53 +156,53 @@ public class ToursServiceImpl implements ToursService {
 
     @Override
     public Optional<Route> getRouteById(Long id) {
-        return Optional.ofNullable(routeRepository.findById(id));
+        return routeRepository.findById(id); // CORREGIDO: Doble Optional quitado
     }
 
     @Override
     public List<Route> getRoutesBelowPrice(float price) {
-        return routeRepository.getRoutesBelowPrice(price);
+        return routeRepository.findByPriceLessThan(price);
     }
 
     @Override
     public void assignDriverByUsername(String username, Long idRoute) throws ToursException {
-        User user = userRepository.getUserByUsername(username)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ToursException("Usuario no encontrado"));
 
         if (!(user instanceof DriverUser)) {
             throw new ToursException("El usuario no es un Chofer (DriverUser)");
         }
 
-        Route route = Optional.ofNullable(routeRepository.findById(idRoute))
+        Route route = routeRepository.findById(idRoute) // CORREGIDO
                 .orElseThrow(() -> new ToursException("Ruta no encontrada"));
 
         DriverUser driver = (DriverUser) user;
         route.getDriverList().add(driver);
         driver.getRoutes().add(route);
-        routeRepository.update(route);
+        routeRepository.save(route); // CORREGIDO: Es save(), no update()
     }
 
     @Override
     public void assignTourGuideByUsername(String username, Long idRoute) throws ToursException {
-        User user = userRepository.getUserByUsername(username)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ToursException("Usuario no encontrado"));
 
         if (!(user instanceof TourGuideUser)) {
             throw new ToursException("El usuario no es un Guía (TourGuideUser)");
         }
 
-        Route route = Optional.ofNullable(routeRepository.findById(idRoute))
+        Route route = routeRepository.findById(idRoute) // CORREGIDO
                 .orElseThrow(() -> new ToursException("Ruta no encontrada"));
 
         TourGuideUser guide = (TourGuideUser) user;
         route.getTourGuideList().add(guide);
         guide.getRoutes().add(route);
-        routeRepository.update(route);
+        routeRepository.save(route); // CORREGIDO
     }
 
     @Override
     public Supplier createSupplier(String businessName, String authorizationNumber) throws ToursException {
-        if (supplierRepository.getSupplierByAuthorizationNumber(authorizationNumber).isPresent()) {
+        if (supplierRepository.findByAuthorizationNumber(authorizationNumber).isPresent()) {
             throw new ToursException("Constraint Violation");
         }
         Supplier supplier = new Supplier();
@@ -228,27 +226,27 @@ public class ToursServiceImpl implements ToursService {
 
     @Override
     public unlp.info.bd2.model.Service updateServicePriceById(Long id, float newPrice) throws ToursException {
-        unlp.info.bd2.model.Service service = Optional.ofNullable(serviceRepository.findById(id))
+        unlp.info.bd2.model.Service service = serviceRepository.findById(id) // CORREGIDO
                 .orElseThrow(() -> new ToursException("No existe el producto"));
 
         service.setPrice(Double.valueOf(newPrice));
-        return serviceRepository.update(service);
+        return serviceRepository.save(service); // CORREGIDO
     }
 
     @Override
     public Optional<Supplier> getSupplierById(Long id) {
-        return Optional.ofNullable(supplierRepository.findById(id));
+        return supplierRepository.findById(id); // CORREGIDO
     }
 
     @Override
     public Optional<Supplier> getSupplierByAuthorizationNumber(String authorizationNumber) {
-        return supplierRepository.getSupplierByAuthorizationNumber(authorizationNumber);
+        return supplierRepository.findByAuthorizationNumber(authorizationNumber);
     }
 
     @Override
     public Optional<unlp.info.bd2.model.Service> getServiceByNameAndSupplierId(String name, Long id)
             throws ToursException {
-        return serviceRepository.getServiceByNameAndSupplierId(name, id);
+        return serviceRepository.findByNameAndSupplierId(name, id);
     }
 
     @Override
@@ -258,21 +256,19 @@ public class ToursServiceImpl implements ToursService {
 
     @Override
     public Purchase createPurchase(String code, Date date, Route route, User user) throws ToursException {
-        if (purchaseRepository.getPurchaseByCode(code).isPresent()) {
+        if (purchaseRepository.findByCode(code).isPresent()) {
             throw new ToursException("Constraint Violation");
         }
-        
         if (route.getPurchases().size() >= route.getMaxNumberOfUsers()) {
             throw new ToursException("No puede realizarse la compra");
         }
-
         Purchase purchase = new Purchase();
         purchase.setCode(code);
         purchase.setDate(date);
         purchase.setRoute(route);
         purchase.setUser(user);
         purchase.setTotalPrice(route.getPrice());
-        
+
         Purchase saved = purchaseRepository.save(purchase);
         user.getPurchaseList().add(saved);
         route.getPurchases().add(saved);
@@ -286,18 +282,18 @@ public class ToursServiceImpl implements ToursService {
         item.setService(service);
         item.setQuantity(quantity);
         item.setPurchase(purchase);
-        
+
         ItemService saved = itemServiceRepository.save(item);
         purchase.getItemServiceList().add(saved);
         service.getItemServiceList().add(saved);
-        purchase.setTotalPrice(purchase.getTotalPrice() + (float)(service.getPrice() * quantity));
+        purchase.setTotalPrice(purchase.getTotalPrice() + (float) (service.getPrice() * quantity));
         purchaseRepository.save(purchase);
         return saved;
     }
 
     @Override
     public Optional<Purchase> getPurchaseByCode(String code) {
-        return purchaseRepository.getPurchaseByCode(code);
+        return purchaseRepository.findByCode(code);
     }
 
     @Override
@@ -314,7 +310,6 @@ public class ToursServiceImpl implements ToursService {
         review.setRating(rating);
         review.setComment(comment);
         purchase.setReview(review);
-        // Rely on CascadeType.ALL from Purchase
         return review;
     }
 
@@ -328,7 +323,7 @@ public class ToursServiceImpl implements ToursService {
 
     @Override
     public List<Purchase> getAllPurchasesOfUsername(String username) {
-        return purchaseRepository.getAllPurchasesOfUsername(username);
+        return purchaseRepository.findByUserUsername(username);
     }
 
     @Override
@@ -338,41 +333,48 @@ public class ToursServiceImpl implements ToursService {
 
     @Override
     public List<Supplier> getTopNSuppliersInPurchases(int n) {
-        return supplierRepository.getTopNSuppliersInPurchases(n);
+        return supplierRepository.getTopNSuppliersInPurchases(PageRequest.of(0, n)).getContent(); // CORREGIDO:
+                                                                                                  // Paginación
     }
 
     @Override
     public long getCountOfPurchasesBetweenDates(Date start, Date end) {
-        return purchaseRepository.getCountOfPurchasesBetweenDates(start, end);
+        return purchaseRepository.countByDateBetween(start, end);
     }
 
     @Override
     public List<Route> getRoutesWithStop(Stop stop) {
-        return routeRepository.getRoutesWithStop(stop);
+        return routeRepository.findByStopsContains(stop);
     }
 
     @Override
     public Long getMaxStopOfRoutes() {
-        return routeRepository.getMaxStopOfRoutes();
+        return (long) routeRepository.getMaxStopOfRoutes(); // CORREGIDO: Casteo de int a Long
     }
 
     @Override
     public List<Route> getRoutsNotSell() {
-        return routeRepository.getRoutsNotSell();
+        return routeRepository.getRoutesNotSell();
     }
 
     @Override
     public List<Route> getTop3RoutesWithMaxRating() {
-        return routeRepository.getTop3RoutesWithMaxRating();
+        return routeRepository.getTop3RoutesWithMaxRating(PageRequest.of(0, 3)).getContent(); // CORREGIDO: Paginación
     }
 
     @Override
     public unlp.info.bd2.model.Service getMostDemandedService() {
-        return serviceRepository.getMostDemandedService();
+        List<unlp.info.bd2.model.Service> result = serviceRepository.getMostDemandedService(PageRequest.of(0, 1));
+        return result.isEmpty() ? null : result.get(0);
     }
 
     @Override
     public List<TourGuideUser> getTourGuidesWithRating1() {
         return userRepository.getTourGuidesWithRating1();
+    }
+
+    @Override
+    public List<Route> getRoutesNotSell() {
+        return routeRepository.getRoutesNotSell();
     }
 }

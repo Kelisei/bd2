@@ -11,64 +11,18 @@ public class AppConfig {
 
     @Bean
     @Primary
-    public ToursService createService() {
-        PurchaseRepository purchaseRepository = this.createPurchaseRepository();
-        ReviewRepository reviewRepository = this.createReviewRepository();
-        RouteRepository routeRepository = this.createRouteRepository();
-        ServiceRepository serviceRepository = this.createServiceRepository();
-        SupplierRepository supplierRepository = this.createSupplierRepository();
-        UserRepository userRepository = this.createUserRepository();
-        StopRepository stopRepository = this.createStopRepository();
-        ItemServiceRepository itemServiceRepository = this.createItemServiceRepository();
+    public ToursService createService(
+            UserRepository userRepository,
+            StopRepository stopRepository,
+            RouteRepository routeRepository,
+            SupplierRepository supplierRepository,
+            ServiceRepository serviceRepository,
+            PurchaseRepository purchaseRepository,
+            ItemServiceRepository itemServiceRepository,
+            ReviewRepository reviewRepository) {
+
         return new ToursServiceImpl(userRepository, stopRepository, routeRepository, supplierRepository,
                 serviceRepository, purchaseRepository, itemServiceRepository, reviewRepository);
     }
 
-    @Bean
-    @Primary
-    public PurchaseRepository createPurchaseRepository() {
-        return new PurchaseRepository();
-    }
-
-    @Bean
-    @Primary
-    public StopRepository createStopRepository() {
-        return new StopRepository();
-    }
-
-    @Bean
-    @Primary
-    public ReviewRepository createReviewRepository() {
-        return new ReviewRepository();
-    }
-
-    @Bean
-    @Primary
-    public RouteRepository createRouteRepository() {
-        return new RouteRepository();
-    }
-
-    @Bean
-    @Primary
-    public ServiceRepository createServiceRepository() {
-        return new ServiceRepository();
-    }
-
-    @Bean
-    @Primary
-    public SupplierRepository createSupplierRepository() {
-        return new SupplierRepository();
-    }
-
-    @Bean
-    @Primary
-    public UserRepository createUserRepository() {
-        return new UserRepository();
-    }
-
-    @Bean
-    @Primary
-    public ItemServiceRepository createItemServiceRepository() {
-        return new ItemServiceRepository();
-    }
 }

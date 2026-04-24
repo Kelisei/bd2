@@ -1,17 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: unlp.info.bd2.ToursApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 10, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 3.135 s <<< FAILURE! -- in unlp.info.bd2.ToursApplicationTests
-unlp.info.bd2.ToursApplicationTests.updateUserTest -- Time elapsed: 0.011 s <<< FAILURE!
-org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
-	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
-	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
-	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
-	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
-	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:31)
-	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:183)
-	at unlp.info.bd2.ToursApplicationTests.updateUserTest(ToursApplicationTests.java:112)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-
+Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.970 s -- in unlp.info.bd2.ToursApplicationTests

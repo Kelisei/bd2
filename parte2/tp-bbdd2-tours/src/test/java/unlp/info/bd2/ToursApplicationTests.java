@@ -102,7 +102,7 @@ class ToursApplicationTests {
 
 		assertEquals("exp...", driverUser.getExpedient());
 		driverUser.setExpedient("nuevo expediente");
-		driverUser = (DriverUser) this.toursService.updateUser(driverUser);
+		driverUser = (DriverUser) this.toursService.ucreateUserpdateUser(driverUser);
 		assertNotEquals("exp...", driverUser.getExpedient());
 		assertEquals("nuevo expediente", driverUser.getExpedient());
 

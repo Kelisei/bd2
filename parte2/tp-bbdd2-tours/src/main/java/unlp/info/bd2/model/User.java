@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
@@ -23,13 +23,17 @@ import jakarta.persistence.Table;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "user_type")
 @SQLDelete(sql = "UPDATE users SET deleted = true WHERE id=?")
-@Where(clause = "deleted = false OR deleted IS NULL")
+// Reemplazo de @Where (deprecado en tu versión de Hibernate) por
+// @SQLRestriction
+@SQLRestriction("deleted = false OR deleted IS NULL")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Bloqueamos la actualización del username a nivel de base de datos
+    @Column(unique = true, updatable = false)
     private String username;
 
     private String password;
@@ -44,20 +48,14 @@ public class User {
 
     private boolean active;
 
-    // g) Nuevo campo para manejar el estado de borrado lógico
+    // Campo para manejar el estado de borrado lógico
     @Column(name = "deleted", nullable = false, columnDefinition = "boolean default false")
     private boolean deleted = false;
 
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
-    }
-
     @OneToMany(mappedBy = "user")
     private List<Purchase> purchaseList = new ArrayList<>();
+
+    // --- Getters y Setters ---
 
     public Long getId() {
         return id;
@@ -115,19 +113,27 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public List<Purchase> getPurchaseList() {
-        return purchaseList;
-    }
-
-    public void setPurchaseList(List<Purchase> purchaseList) {
-        this.purchaseList = purchaseList;
-    }
-
     public boolean isActive() {
         return active;
     }
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public List<Purchase> getPurchaseList() {
+        return purchaseList;
+    }
+
+    public void setPurchaseList(List<Purchase> purchaseList) {
+        this.purchaseList = purchaseList;
     }
 }
